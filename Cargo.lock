@@ -1270,7 +1270,6 @@ version = "0.1.0"
 dependencies = [
  "rocket",
  "rocket-multipart-form-data",
- "tokio",
 ]
 
 [[package]]
