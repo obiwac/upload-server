@@ -26,31 +26,12 @@ async fn upload(content_type: &ContentType, data: Data<'_>) {
 		opts.allowed_fields.push(field);
 	}
 
-	// remove output directory (if it already exists)
-	// don't remove recursively though!
+	// create output directory if it doesn't already exist
 
-	if fs::metadata(OUT_DIR).is_ok() {
-		let entries = fs::read_dir(OUT_DIR)
-			.unwrap_or_else(|e| panic!("can't read {}: {:?}", OUT_DIR, e));
-
-		for entry in entries {
-			let entry = entry.expect("can't read directory entry");
-			let path = entry.path();
-
-			if path.is_file() {
-				fs::remove_file(&path)
-					.unwrap_or_else(|e| panic!("can't remove {:?}: {:?}", &path, e));
-			}
-		}
-
-		fs::remove_dir(OUT_DIR)
-			.unwrap_or_else(|e| panic!("can't remove {}: {:?}", OUT_DIR, e));
+	if fs::metadata(OUT_DIR).is_err() {
+		fs::create_dir(OUT_DIR)
+			.unwrap_or_else(|e| panic!("can't create {}: {:?}", OUT_DIR, e));
 	}
-
-	// create output directory
-
-	fs::create_dir(OUT_DIR)
-		.unwrap_or_else(|e| panic!("can't create {}: {:?}", OUT_DIR, e));
 
 	// parse data into output directory
 
